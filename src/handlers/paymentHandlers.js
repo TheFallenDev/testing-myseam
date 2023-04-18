@@ -1,34 +1,19 @@
-const mercadopago = require("mercadopago");
 const { createPreference, sendInformationMP } = require("../controllers/paymentControllers");
 const { CLIENT_ID, CLIENT_SECRET, ACCESS_TOKEN, REDIRECT_URI} = process.env;
 const { User } = require("../db.js");
 const axios = require('axios');
 
 const postPaymentHandler = (req,res) => {
-  mercadopago.configure({
-    access_token: process.env.ACCESS_TOKEN,
-  })
   const { items, seller_id } = req.body;
   try{
     res.status(200).json(createPreference(items, seller_id));
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
-  /* mercadopago.preferences.create(preference)
-    .then(function (response) {
-      res.json({
-        global: response.body.id,
-      })
-    })
-    .catch(function (error) {
-      console.log(error);
-    }); */
-
 } 
 
 const getAuthCode = async (req,res) => {
   const { code, state } = req.query;
-  console.log(code,"   ",state);
   try {
     await axios
       .post(
@@ -48,11 +33,10 @@ const getAuthCode = async (req,res) => {
         }
       )
       .then((response) => {
-        console.log(response);
         User.update({ 
           MPAccessToken : response.data.access_token,
           MPUserId : response.data.user_id,
-          MPRefreshToken : response.data.refresh_toke,
+          MPRefreshToken : response.data.refresh_token,
           MPExpiresIn : response.data.expires_in
         },{
           where: {
