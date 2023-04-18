@@ -1,9 +1,9 @@
-import { configure } from 'mercadopago';
+const mercadopago = require('mercadopago');
 import { User } from "../db.js";
 import axios from 'axios';
 
 export async function createPreference(items, seller_id) {
-  configure({
+  mercadopago.configure({
     access_token: process.env.ACCESS_TOKEN,
   });
   // Crea un objeto de preferencia
