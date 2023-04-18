@@ -28,6 +28,7 @@ const postPaymentHandler = (req,res) => {
 
 const getAuthCode = async (req,res) => {
   const { code, status } = req.query;
+  console.log(code,"   ",status);
   try {
     await axios
       .post(
@@ -47,6 +48,7 @@ const getAuthCode = async (req,res) => {
         }
       )
       .then((response) => {
+        console.log(response);
         User.update({ 
           MPAccessToken : response.access_token,
           MPUserId : response.user_id,
@@ -61,7 +63,9 @@ const getAuthCode = async (req,res) => {
       .catch((error) => {
         console.error(error);
       })
-    res.redirect('https://my-seam.vercel.app/');
+      .finally(() => {
+        res.redirect('https://my-seam.vercel.app/home');
+      })
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
