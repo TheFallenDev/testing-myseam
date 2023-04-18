@@ -1,6 +1,7 @@
 const mercadopago = require("mercadopago");
 const { createPreference, sendInformationMP } = require("../controllers/paymentControllers");
 const { CLIENT_ID, CLIENT_SECRET, ACCESS_TOKEN, REDIRECT_URI} = process.env;
+const { User } = require("../db.js");
 const axios = require('axios');
 
 const postPaymentHandler = (req,res) => {
