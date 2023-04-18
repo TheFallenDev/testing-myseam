@@ -1,13 +1,16 @@
-const { CLIENT_ID, CLIENT_SECRET, ACCESS_TOKEN, REDIRECT_URI} = process.env;
+const mercadopago = require('mercadopago');
 const { User } = require("../db.js");
 const axios = require('axios');
 
 module.exports = {
   createPreference: async (items, seller_id) => {
+    mercadopago.configure({
+      access_token: process.env.ACCESS_TOKEN,
+    })
     // Crea un objeto de preferencia
     let preference = {
       back_urls: {
-        success: "http://localhost:3000/home",
+        success: "https://my-seam.vercel.app/",
         failure: "http://localhost:3000/checkout/failure",
         pending: "http://localhost:3000/checkout/pending",
       },
@@ -36,39 +39,5 @@ module.exports = {
       .catch(function (error) {
         console.log(error);
       });
-  },
-  sendInformationMP: async (code, status) => {
-    axios
-      .post(
-        "https://api.mercadopago.com/oauth/token",
-        {
-          client_secret: CLIENT_SECRET,
-          client_id: CLIENT_ID,
-          grant_type: "authorization_code",
-          code: code,
-          redirect_uri: REDIRECT_URI 
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${ACCESS_TOKEN}`,
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then(async (response) => {
-        await User.update({ 
-          MPAccessToken : response.access_token,
-          MPUserId : response.user_id,
-          MPRefreshToken : response.refresh_toke,
-          MPExpiresIn : response.expires_in
-        },{
-          where: {
-            id: status
-          }
-        })
-      })
-      .catch((error) => {
-        console.error(error);
-      })
   },
 };
