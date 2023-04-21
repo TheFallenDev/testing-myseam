@@ -10,8 +10,7 @@ const { ACCESS } = process.env;
 require("./db.js");
 
 const server = express();
-
-server.name = "API";
+// Configurar CORS
 server.use(
   cors({
     origin: ACCESS, // Cambiar esto con el origen de tu cliente
@@ -19,6 +18,8 @@ server.use(
     allowedHeaders: "Content-Type, Authorization, x-access-token",
   })
 );
+server.name = "API";
+
 server.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 server.use(bodyParser.json({ limit: "50mb" }));
 server.use(cookieParser());
